@@ -51,18 +51,25 @@ exports.signUserIn = async (req, res) => {
             if (isEqual) {
                 let token = jwt.sign({
                     id: user._id
-                }, "secretkey");
-                res.json({
+                }, process.env.JWT_SECRET_KEY);
+                res.status(200).json({
+                    success: true,
+                    message: 'Welcome home',
                     userData: user,
                     token
                 });
-                res.send('Welcome home');
-                console.log('Welcome home')
             } else {
-                res.send('Incorrect password');
+                res.status(400).json({
+                    success: false,
+                    message: 'Incorrect password'
+                });
             }
         }
     } catch (err) {
-        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error',
+            error: err.message
+        });
     }
 };
