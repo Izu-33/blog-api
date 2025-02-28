@@ -3,18 +3,13 @@ const mongoose = require('mongoose');
 const blogSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true,
         unique: true
     },
     body: {
-        type: String,
-        required: true,
-        unique: true
+        type: String
     },
     category: {
-        type: String,
-        required: true,
-        unique: true
+        type: String
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
@@ -25,7 +20,7 @@ const blogSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }    
-}, {timestamp: true});
+}, {timestamps: true});
 
 const Blog = mongoose.model('blog', blogSchema);
 

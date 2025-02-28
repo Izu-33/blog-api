@@ -5,26 +5,33 @@ const jwt = require('jsonwebtoken');
 exports.signUserUp = async (req, res) => {
     try {
         let { firstName, lastName, phoneNumber, email, password } = req.body;
-        let user = await User.findOne({ email });
-        if (!user) {
-            let saltRounds = 10;
-        let hash = await bcrypt.hash(password, saltRounds);
-        let newUser = new User({
-            firstName, 
-            lastName,
-            phoneNumber,
-            email,
-            password: hash
-        });
-        await newUser.save();
-        res.status(201).json({
-            success: true,
-            message: 'User saved successfully!',
-            data: newUser
-        });
-        } else {
-            res.send('User exists!;')
-        }
+
+        if (firstName && lastName) {
+            let user = await User.findOne({ email });
+            if (!user) {
+                let saltRounds = 10;
+                let hash = await bcrypt.hash(password, saltRounds);
+                let newUser = new User({
+                    firstName, 
+                    lastName,
+                    phoneNumber,
+                    email,
+                    password: hash
+                });
+                await newUser.save();
+                res.status(201).json({
+                    success: true,
+                    message: 'User saved successfully!',
+                    data: newUser
+                });
+            } else {
+                res.send('User exists!;')
+            }
+        }  else {
+            res.json({
+                message: "Please fill in all fields!"
+            });
+        } 
     } catch (err) {
         console.error(err);
         res.status(500).json({

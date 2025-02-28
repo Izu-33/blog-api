@@ -9,8 +9,8 @@ app = express();
 
 connectToDB();
 
-app.use('/api/v1/blog', appRouter);
 app.use(express.json());
+app.use('/api/v1/blog', appRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running at port: ${PORT}`);
