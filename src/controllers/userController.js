@@ -25,10 +25,14 @@ exports.signUserUp = async (req, res) => {
                     data: newUser
                 });
             } else {
-                res.send('User exists!;')
+                return res.status(409).json({
+                    success: false,
+                    message: 'User exists!'
+                });
             }
         }  else {
-            res.json({
+            res.status(400).json({
+                success: false,
                 message: "Please fill in all fields!"
             });
         } 

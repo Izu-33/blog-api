@@ -14,17 +14,29 @@ exports.fetchAllBlogs = async (req, res) => {
         let savedBlogs = await redis.get(redisKey); 
 
         if (savedBlogs) {
-            return res.json({data: savedBlogs});
+            return res.status(200).json({
+                success: true,
+                message: 'Blogs fetched sucessfully',
+                data: savedBlogs
+            });
         } else {
             let allBlogs = await Blog.find({});
             console.log(await redis.get('message'));
-            console.log(allBlogs);
+            // console.log(allBlogs);
             await redis.set(redisKey, JSON.stringify(allBlogs), 'EX', 600);
             res.send('All blogs have been found');
+            return res.status(200).json({
+                success: true,
+                message: 'Blogs fetched sucessfully',
+                data: allBlogs
+            });
         }
     } catch (err) {
-        console.log(err);
-        res.send('There is an error');
+        return res.status(500).json({
+            success: false,
+            message: 'Error trying to retrieve blog posts', 
+            error: err.message
+        });
     }
     
 };
@@ -38,10 +50,17 @@ exports.addNewBlog = async (req, res) => {
             body,
             category
         });
+
         await newBlog.save();
-        return res.json({data: newBlog});
+
+        return res.status(201).json({
+            success: true,
+            message: 'Blog posted successfully!',
+            data: newBlog
+        });
     } catch (err) {
-        return res.json({
+        return res.status(500).json({
+            success: false,
             message: 'Error trying to save', 
             error: err.message
         });
